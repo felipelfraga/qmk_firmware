@@ -2,6 +2,11 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include QMK_KEYBOARD_H
 
+enum {
+    TD_LBRC_LPRN,
+    TD_RBRC_RPRN,
+};
+
 enum sofle_layers {
     /* _M_XYZ = Mac Os, _W_XYZ = Win/Linux */
     _QWERTY,
@@ -15,7 +20,9 @@ enum custom_keycodes {
     KC_PRVWD = QK_USER,
     KC_NXTWD,
     KC_LSTRT,
-    KC_LEND
+    KC_LEND,
+    KC_DQSPC,  // " + espaço
+    KC_SQSPC   // ' + espaço        
 };
 
 #define KC_QWERTY PDF(_QWERTY)
@@ -39,11 +46,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_QWERTY] = LAYOUT(
-  KC_GRV,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_GRV,
-  KC_ESC,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,  KC_BSPC,
-  KC_TAB,   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN,  KC_QUOT,
-  KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,     XXXXXXX,KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_RSFT,
-                 KC_LGUI,KC_LALT,KC_LCTL, TL_LOWR, KC_ENT,      KC_SPC,  TL_UPPR, KC_RCTL, KC_RALT, KC_RGUI
+  KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_SQSPC, KC_DQSPC, KC_MINS, KC_EQL,  KC_DEL, KC_BSPC,
+  KC_GRV,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,   TD(TD_LBRC_LPRN),
+  KC_LSFT, KC_A,  KC_S, KC_D,  KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN,   RSFT_T(KC_QUOT),
+  LCTL_T(KC_TAB),  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,   XXXXXXX, KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,   TD(TD_RBRC_RPRN),
+                 KC_LGUI,KC_LALT,KC_LCTL, TL_LOWR, KC_ENT,      KC_SPC,  TL_UPPR, RCTL_T(KC_DEL), RALT_T(KC_BSPC),  KC_RGUI
 ),
 /*
  * COLEMAK
@@ -51,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |  `   |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  |  `   |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * | ESC  |   Q  |   W  |   F  |   P  |   G  |                    |   J  |   L  |   U  |   Y  |   ;  | Bspc |
- * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+-----|
  * | TAB  |   A  |   R  |   S  |   T  |   D  |-------.    ,-------|   H  |   N  |   E  |   I  |   O  |  '   |
  * |------+------+------+------+------+------|  MUTE |    |       |------+------+------+------+------+------|
  * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   K  |   M  |   ,  |   .  |   /  |RShift|
@@ -106,8 +113,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_RAISE] = LAYOUT(
   _______, _______ , _______ , _______ , _______ , _______,                           _______,  _______  , _______,  _______ ,  _______ ,_______,
   _______,  KC_INS,  KC_PSCR,   KC_APP,  XXXXXXX, XXXXXXX,                        KC_PGUP, KC_PRVWD,   KC_UP, KC_NXTWD,C(KC_BSPC), KC_BSPC,
-  _______, KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX, KC_CAPS,                       KC_PGDN,  KC_LEFT, KC_DOWN, KC_RGHT,  KC_DEL, KC_BSPC,
-  _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), XXXXXXX,  _______,       _______,  XXXXXXX, KC_LSTRT, XXXXXXX, KC_LEND,   XXXXXXX, _______,
+  _______, C(KC_A),  C(KC_S),  C(KC_D),  C(KC_F), KC_CAPS,                       KC_PGDN,  KC_LEFT, KC_DOWN, KC_RGHT,  KC_DEL, KC_BSPC,
+  _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), C(KC_B),  _______,       _______,  XXXXXXX, KC_LSTRT, XXXXXXX, KC_LEND,   XXXXXXX, _______,
                          _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______
 ),
 /* ADJUST
@@ -125,7 +132,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *            `----------------------------------'           '------''---------------------------'
  */
   [_ADJUST] = LAYOUT(
-  XXXXXXX , XXXXXXX,  XXXXXXX ,  XXXXXXX , XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  UG_TOGG, UG_HUEU , UG_HUED , UG_NEXT , UG_PREV, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_CLEAR_EEPROM,
   QK_BOOT  , XXXXXXX,KC_QWERTY,KC_COLEMAK,CG_TOGG,XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   XXXXXXX , XXXXXXX,CG_TOGG, XXXXXXX,    XXXXXXX,  XXXXXXX,                     XXXXXXX, KC_VOLD, KC_MUTE, KC_VOLU, XXXXXXX, XXXXXXX,
   XXXXXXX , XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX,  XXXXXXX, XXXXXXX,     XXXXXXX, XXXXXXX, KC_MPRV, KC_MPLY, KC_MNXT, XXXXXXX, XXXXXXX,
@@ -209,6 +216,83 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             break;
+        case KC_DQSPC:
+            if (record->event.pressed) {
+                tap_code16(S(KC_QUOT)); // "
+                tap_code(KC_SPC);       // espaço
+            }
+            break;
+
+        case KC_SQSPC:
+            if (record->event.pressed) {
+                tap_code(KC_QUOT);      /
+                tap_code(KC_SPC);       // espaço
+            }
+            break;
     }
     return true;
 }
+
+tap_dance_action_t tap_dance_actions[] = {
+    [TD_LBRC_LPRN] = ACTION_TAP_DANCE_DOUBLE(KC_LBRC, KC_LPRN),
+    [TD_RBRC_RPRN] = ACTION_TAP_DANCE_DOUBLE(KC_RBRC, KC_RPRN),
+};
+
+// #ifdef TAPPING_TERM_PER_KEY
+// uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+//     switch (keycode) {
+//         case LCTL_T(KC_A):
+//         case LALT_T(KC_S):
+//         case LSFT_T(KC_D):
+//         case LGUI_T(KC_F):
+//         case RGUI_T(KC_J):
+//         case RSFT_T(KC_K):
+//         case RALT_T(KC_L):
+//         case RCTL_T(KC_SCLN):
+//             return 220;
+
+//         default:
+//             return TAPPING_TERM;
+//     }
+// }
+// #endif
+
+// #ifdef HOLD_ON_OTHER_KEY_PRESS_PER_KEY
+// bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+//     switch (keycode) {
+//         // Home Row Mods: NÃO usar HOLD_ON_OTHER_KEY_PRESS
+//         case LCTL_T(KC_A):
+//         case LALT_T(KC_S):
+//         case LSFT_T(KC_D):
+//         case LGUI_T(KC_F):
+//         case RGUI_T(KC_J):
+//         case RSFT_T(KC_K):
+//         case RALT_T(KC_L):
+//         case RCTL_T(KC_SCLN):
+//             return false;
+
+//         // Demais Mod-Taps
+//         default:
+//             return true;
+//     }
+// }
+// #endif
+
+// #ifdef FLOW_TAP_TERM
+// bool is_flow_tap_key(uint16_t keycode) {
+//     switch (keycode) {
+//         case LCTL_T(KC_A):
+//         case LALT_T(KC_S):
+//         case LSFT_T(KC_D):
+//         case LGUI_T(KC_F):
+//         case RGUI_T(KC_J):
+//         case RSFT_T(KC_K):
+//         case RALT_T(KC_L):
+//         case RCTL_T(KC_SCLN):
+//             return true;
+
+//         default:
+//             return false;
+//     }
+// }
+// #endif
