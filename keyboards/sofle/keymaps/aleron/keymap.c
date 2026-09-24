@@ -5,6 +5,7 @@
 enum {
     TD_LBRC_LPRN,
     TD_RBRC_RPRN,
+    TD_SCLN_CIRC,
 };
 
 enum sofle_layers {
@@ -21,8 +22,8 @@ enum custom_keycodes {
     KC_NXTWD,
     KC_LSTRT,
     KC_LEND,
-    KC_DQSPC,  // " + espaço
-    KC_SQSPC   // ' + espaço        
+    KC_LITERALDQ,
+    KC_LITERALSQ
 };
 
 #define KC_QWERTY PDF(_QWERTY)
@@ -46,9 +47,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_QWERTY] = LAYOUT(
-  KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_SQSPC, KC_DQSPC, KC_MINS, KC_EQL,  KC_DEL, KC_BSPC,
+  KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_LITERALSQ, KC_LITERALDQ, KC_MINS, KC_EQL,  KC_DEL, KC_BSPC,
   KC_GRV,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,   TD(TD_LBRC_LPRN),
-  KC_LSFT, KC_A,  KC_S, KC_D,  KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN,   RSFT_T(KC_QUOT),
+  KC_LSFT, KC_A,  KC_S, KC_D,  KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L,    TD(TD_SCLN_CIRC),   RSFT_T(KC_QUOT),
   LCTL_T(KC_TAB),  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,   XXXXXXX, KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,   TD(TD_RBRC_RPRN),
                  KC_LGUI,KC_LALT,KC_LCTL, TL_LOWR, KC_ENT,      KC_SPC,  TL_UPPR, RCTL_T(KC_DEL), RALT_T(KC_BSPC),  KC_RGUI
 ),
@@ -75,6 +76,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,      XXXXXXX,KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_RSFT,
                  KC_LGUI,KC_LALT,KC_LCTL,TL_LOWR, KC_ENT,        KC_SPC,  TL_UPPR, KC_RCTL, KC_RALT, KC_RGUI
 ),
+
+
+/* ABNT2
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |  '   |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  |  -   |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |  ~   |   Q  |   W  |   E  |   R  |   T  |                    |   Y  |   U  |   I  |   O  |   P  |  ´   |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | Tab  |   A  |   S  |   D  |   F  |   G  |-------.    ,-------|   H  |   J  |   K  |   L  |   Ç  |  ~   |
+ * |------+------+------+------+------+------|  MUTE |    |       |------+------+------+------+------+------|
+ * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   N  |   M  |   ,  |   .  |   ;  |  /   |
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *            | LGUI | LAlt | LCTR |LOWER | /Enter  /       \Space \  |RAISE | RCTR | RAlt | RGUI |
+ *            |      |      |      |      |/       /         \      \ |      |      |      |      |
+ *            `----------------------------------'           '------''---------------------------'
+ */
+//
+//  [_ABNT2] = LAYOUT(
+//   KC_ESC,  KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                      KC_LITERALSQ, KC_LITERALDQ, KC_MINS, KC_EQL,  KC_DEL, KC_BSPC,
+//   KC_QUOT,  KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                      KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,  KC_ACUT,
+//   KC_LSFT,  KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                      KC_H,    KC_J,    KC_K,    KC_L,    TD(TD_SCLN_CIRC), KC_TILD,
+//   LCTL_T(KC_TAB),  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,     XXXXXXX, KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SCLN,  KC_SLSH,
+//                      KC_LGUI, KC_LALT, KC_LCTL, TL_LOWR, KC_ENT,  KC_SPC,  TL_UPPR, RCTL_T(KC_DEL), RALT_T(KC_BSPC), KC_RGUI
+// ),
+
+
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * |      |  F1  |  F2  |  F3  |  F4  |  F5  |                    |  F6  |  F7  |  F8  |  F9  | F10  | F11  |
@@ -139,6 +166,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                    _______, _______, _______, _______, _______,     _______, _______, _______, _______, _______
   )
 };
+
+void td_scln_circ_finished(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        // Um toque: ponto e vírgula
+        tap_code(KC_SCLN);
+    } else if (state->count == 2) {
+        // Triplo toque: acento circunflexo
+        tap_code16(S(KC_6));  // Shift+6 = ^   
+    } else if (state->count == 3) {
+        // Captura o estado do Shift ANTES de qualquer ação
+        bool shifted = (get_mods() & MOD_MASK_SHIFT);
+        
+        // Produz ç usando Alt + vírgula
+        if (shifted) {
+            // Para Ç maiúsculo: Shift + Alt + ,
+            register_code(KC_RALT);
+            tap_code16(S(KC_COMMA));
+            unregister_code(KC_RALT);
+        } else {
+            // Para ç minúsculo: Alt + ,
+            register_code(KC_RALT);
+            tap_code(KC_COMMA);
+            unregister_code(KC_RALT);
+        }
+    }
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -216,17 +269,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             break;
-        case KC_DQSPC:
+        case KC_LITERALDQ:
             if (record->event.pressed) {
-                tap_code16(S(KC_QUOT)); // "
-                tap_code(KC_SPC);       // espaço
+                register_code(KC_RALT);
+                tap_code16(S(KC_QUOT));
+                unregister_code(KC_RALT);
             }
             break;
 
-        case KC_SQSPC:
+        case KC_LITERALSQ:
             if (record->event.pressed) {
-                tap_code(KC_QUOT);      /
-                tap_code(KC_SPC);       // espaço
+                register_code(KC_RALT);
+                tap_code16(KC_QUOT);
+                unregister_code(KC_RALT);
             }
             break;
     }
@@ -236,6 +291,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 tap_dance_action_t tap_dance_actions[] = {
     [TD_LBRC_LPRN] = ACTION_TAP_DANCE_DOUBLE(KC_LBRC, KC_LPRN),
     [TD_RBRC_RPRN] = ACTION_TAP_DANCE_DOUBLE(KC_RBRC, KC_RPRN),
+    [TD_SCLN_CIRC] = ACTION_TAP_DANCE_FN_ADVANCED(
+        NULL,
+        td_scln_circ_finished,
+        NULL
+    ),
 };
 
 // #ifdef TAPPING_TERM_PER_KEY
