@@ -1,17 +1,21 @@
 // Copyright 2023 QMK
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include QMK_KEYBOARD_H
+#include "keymap_brazilian_abnt2.h"
 
 enum {
-    TD_LBRC_LPRN,
-    TD_RBRC_RPRN,
-    TD_SCLN_CIRC,
+    TD_LBRC_LPRN,   // ANSI: [ / (
+    TD_RBRC_RPRN,   // ANSI: ] / )
+    TD_SCLN_CIRC,   // ANSI: ; / ^ / ç
+    TD_BR_LBRC,     // ABNT2: [ / (
+    TD_BR_RBRC,     // ABNT2: ] / )
 };
 
 enum sofle_layers {
     /* _M_XYZ = Mac Os, _W_XYZ = Win/Linux */
     _QWERTY,
-    _COLEMAK,
+//    _COLEMAK,
+    _ABNT2,
     _LOWER,
     _RAISE,
     _ADJUST,
@@ -27,7 +31,9 @@ enum custom_keycodes {
 };
 
 #define KC_QWERTY PDF(_QWERTY)
-#define KC_COLEMAK PDF(_COLEMAK)
+//#define KC_COLEMAK PDF(_COLEMAK)
+#define KC_ABNT2 PDF(_ABNT2)
+
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -69,37 +75,37 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *            `----------------------------------'           '------''---------------------------'
  */
 
-[_COLEMAK] = LAYOUT(
-  KC_GRV,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_GRV,
-  KC_ESC,   KC_Q,   KC_W,    KC_F,    KC_P,    KC_G,                      KC_J,    KC_L,    KC_U,    KC_Y, KC_SCLN,  KC_BSPC,
-  KC_TAB,   KC_A,   KC_R,    KC_S,    KC_T,    KC_D,                      KC_H,    KC_N,    KC_E,    KC_I,    KC_O,  KC_QUOT,
-  KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,      XXXXXXX,KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_RSFT,
-                 KC_LGUI,KC_LALT,KC_LCTL,TL_LOWR, KC_ENT,        KC_SPC,  TL_UPPR, KC_RCTL, KC_RALT, KC_RGUI
-),
+// [_COLEMAK] = LAYOUT(
+//   KC_GRV,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_GRV,
+//   KC_ESC,   KC_Q,   KC_W,    KC_F,    KC_P,    KC_G,                      KC_J,    KC_L,    KC_U,    KC_Y, KC_SCLN,  KC_BSPC,
+//   KC_TAB,   KC_A,   KC_R,    KC_S,    KC_T,    KC_D,                      KC_H,    KC_N,    KC_E,    KC_I,    KC_O,  KC_QUOT,
+//   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,      XXXXXXX,KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_RSFT,
+//                  KC_LGUI,KC_LALT,KC_LCTL,TL_LOWR, KC_ENT,        KC_SPC,  TL_UPPR, KC_RCTL, KC_RALT, KC_RGUI
+// ),
 
 
 /* ABNT2
  * ,-----------------------------------------.                    ,-----------------------------------------.
- * |  '   |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  |  -   |
+ * | Esc  |   1  |   2  |   3  |   4  |   5  |                    |  [   |   ]  |   8  |   9  |  Del | Bksp |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |  ~   |   Q  |   W  |   E  |   R  |   T  |                    |   Y  |   U  |   I  |   O  |   P  |  ´   |
+ * |  '   |   Q  |   W  |   E  |   R  |   T  |                    |  Y   |   U  |   I  |   O  |   P  |  ´   |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * | Tab  |   A  |   S  |   D  |   F  |   G  |-------.    ,-------|   H  |   J  |   K  |   L  |   Ç  |  ~   |
+ * | Tab  |   A  |   S  |   D  |   F  |   G  |-------.    ,-------|  H   |   J  |   K  |   L  |   Ç  |  ~   |
  * |------+------+------+------+------+------|  MUTE |    |       |------+------+------+------+------+------|
- * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   N  |   M  |   ,  |   .  |   ;  |  /   |
+ * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|  N   |   M  |   ,  |   .  |   ;  |  /   |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *            | LGUI | LAlt | LCTR |LOWER | /Enter  /       \Space \  |RAISE | RCTR | RAlt | RGUI |
  *            |      |      |      |      |/       /         \      \ |      |      |      |      |
  *            `----------------------------------'           '------''---------------------------'
  */
-//
-//  [_ABNT2] = LAYOUT(
-//   KC_ESC,  KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                      KC_LITERALSQ, KC_LITERALDQ, KC_MINS, KC_EQL,  KC_DEL, KC_BSPC,
-//   KC_QUOT,  KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                      KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,  KC_ACUT,
-//   KC_LSFT,  KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                      KC_H,    KC_J,    KC_K,    KC_L,    TD(TD_SCLN_CIRC), KC_TILD,
-//   LCTL_T(KC_TAB),  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,     XXXXXXX, KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SCLN,  KC_SLSH,
-//                      KC_LGUI, KC_LALT, KC_LCTL, TL_LOWR, KC_ENT,  KC_SPC,  TL_UPPR, RCTL_T(KC_DEL), RALT_T(KC_BSPC), KC_RGUI
-// ),
+
+ [_ABNT2] = LAYOUT(
+  KC_ESC,  KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                      TD(TD_BR_LBRC), TD(TD_BR_RBRC), KC_MINS, KC_EQL,  KC_DEL, KC_BSPC,
+  BR_QUOT,  KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                      KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,  BR_ACUT,
+  KC_LSFT,  KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                      KC_H,    KC_J,    KC_K,    KC_L,    BR_CCED, RSFT_T(BR_TILD),
+  LCTL_T(KC_TAB),  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,     XXXXXXX, KC_N,    KC_M, KC_COMM,  KC_DOT, BR_SCLN,  BR_SLSH,
+                     KC_LGUI, KC_LALT, KC_LCTL, TL_LOWR, KC_ENT,  KC_SPC,  TL_UPPR, RCTL_T(KC_DEL), RALT_T(KC_BSPC), KC_RGUI
+),
 
 
 /* LOWER
@@ -160,7 +166,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
   [_ADJUST] = LAYOUT(
   UG_TOGG, UG_HUEU , UG_HUED , UG_NEXT , UG_PREV, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_CLEAR_EEPROM,
-  QK_BOOT  , XXXXXXX,KC_QWERTY,KC_COLEMAK,CG_TOGG,XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  QK_BOOT  , XXXXXXX,KC_QWERTY,KC_ABNT2,CG_TOGG,XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   XXXXXXX , XXXXXXX,CG_TOGG, XXXXXXX,    XXXXXXX,  XXXXXXX,                     XXXXXXX, KC_VOLD, KC_MUTE, KC_VOLU, XXXXXXX, XXXXXXX,
   XXXXXXX , XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX,  XXXXXXX, XXXXXXX,     XXXXXXX, XXXXXXX, KC_MPRV, KC_MPLY, KC_MNXT, XXXXXXX, XXXXXXX,
                    _______, _______, _______, _______, _______,     _______, _______, _______, _______, _______
@@ -296,6 +302,8 @@ tap_dance_action_t tap_dance_actions[] = {
         td_scln_circ_finished,
         NULL
     ),
+    [TD_BR_LBRC]   = ACTION_TAP_DANCE_DOUBLE(BR_LBRC, BR_LPRN),
+    [TD_BR_RBRC]   = ACTION_TAP_DANCE_DOUBLE(BR_RBRC, BR_RPRN),    
 };
 
 // #ifdef TAPPING_TERM_PER_KEY
