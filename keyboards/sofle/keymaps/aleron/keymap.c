@@ -27,7 +27,15 @@ enum custom_keycodes {
     KC_LSTRT,
     KC_LEND,
     KC_LITERALDQ,
-    KC_LITERALSQ
+    KC_LITERALSQ,
+    KC_BLD_LBRC,   // Base Layer dependent: [ / (
+    KC_BLD_RBRC,   // Base Layer dependent: ] / )
+    KC_BLD_BSLS,   // Base Layer dependent: \ / |
+    KC_BLD_PIPE,   // Base Layer dependent: | 
+    KC_BLD_SCLN,   // Base Layer dependent: ;
+    KC_BLD_COLN,   // Base Layer dependent: :
+    KC_BLD_LCBR,   // Base Layer dependent: {
+    KC_BLD_RCBR,   // Base Layer dependent: }    
 };
 
 #define KC_QWERTY PDF(_QWERTY)
@@ -114,9 +122,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |  `   |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  | F12  |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * | Tab  |   !  |   @  |   #  |   $  |   %  |-------.    ,-------|   ^  |   &  |   *  |   (  |   )  |   |  |
+ * | Shift|   !  |   @  |   #  |   $  |   %  |-------.    ,-------|   ^  |   &  |   *  |   (  |   )  |   |  |
  * |------+------+------+------+------+------|  MUTE |    |       |------+------+------+------+------+------|
- * | Shift|  =   |  -   |  +   |   {  |   }  |-------|    |-------|   [  |   ]  |   ;  |   :  |   \  | Shift|
+ * | Tab  |  =   |  -   |  +   |   {  |   }  |-------|    |-------|   [  |   ]  |   ;  |   :  |   \  |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *            | LGUI | LAlt | LCTR |LOWER | /Enter  /       \Space \  |RAISE | RCTR | RAlt | RGUI |
  *            |      |      |      |      |/       /         \      \ |      |      |      |      |
@@ -124,9 +132,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_LOWER] = LAYOUT(
   _______,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                       KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10,  KC_F11,
-  KC_GRV,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                       KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_F12,
-  _______, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                       KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_PIPE,
-  _______,  KC_EQL, KC_MINS, KC_PLUS, KC_LCBR, KC_RCBR, _______,       _______, KC_LBRC, KC_RBRC, KC_SCLN, KC_COLN, KC_BSLS, _______,
+  KC_GRV,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_F12,
+  _______, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                       KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BLD_PIPE,
+  _______,  KC_EQL, KC_MINS, KC_PLUS, KC_BLD_LCBR, KC_BLD_RCBR, _______,       _______, KC_BLD_LBRC, KC_BLD_RBRC, KC_BLD_SCLN, KC_BLD_COLN, KC_BLD_BSLS, _______,
                        _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______
 ),
 /* RAISE
@@ -200,6 +208,8 @@ void td_scln_circ_finished(tap_dance_state_t *state, void *user_data) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    bool is_abnt2 = (get_highest_layer(default_layer_state) == _ABNT2);
+
     switch (keycode) {
         case KC_PRVWD:
             if (record->event.pressed) {
@@ -290,6 +300,68 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 unregister_code(KC_RALT);
             }
             break;
+        case KC_BLD_LBRC:
+            if (record->event.pressed) {
+                tap_code(is_abnt2 ? BR_LBRC : KC_LBRC);
+            }
+            break;
+
+        case KC_BLD_RBRC:
+            if (record->event.pressed) {
+                tap_code(is_abnt2 ? BR_RBRC : KC_RBRC);
+            }
+            break;
+
+        case KC_BLD_BSLS:
+            if (record->event.pressed) {
+                tap_code(is_abnt2 ? BR_BSLS : KC_BSLS);
+            }
+            break;
+        case KC_BLD_PIPE:
+            if (record->event.pressed) {
+                if (is_abnt2) {
+                    tap_code16(BR_PIPE);   // LSFT(BR_BSLS) no ABNT2
+                } else {
+                    tap_code16(KC_PIPE);   // | no QWERTY US
+                }
+            }
+            break;
+
+        case KC_BLD_SCLN:
+            if (record->event.pressed) {
+                tap_code(is_abnt2 ? BR_SCLN : KC_SCLN);
+            }
+            break;
+
+        case KC_BLD_COLN:
+            if (record->event.pressed) {
+                if (is_abnt2) {
+                    tap_code16(BR_COLN);   // LSFT(BR_SCLN) no ABNT2
+                } else {
+                    tap_code16(KC_COLN);   // : no QWERTY US
+                }
+            }
+            break;
+
+        case KC_BLD_LCBR:
+            if (record->event.pressed) {
+                if (is_abnt2) {
+                    tap_code16(BR_LCBR);   // LSFT(BR_LBRC) no ABNT2
+                } else {
+                    tap_code16(KC_LCBR);   // { no QWERTY US
+                }
+            }
+            break;
+
+        case KC_BLD_RCBR:
+            if (record->event.pressed) {
+                if (is_abnt2) {
+                    tap_code16(BR_RCBR);   // LSFT(BR_RBRC) no ABNT2
+                } else {
+                    tap_code16(KC_RCBR);   // } no QWERTY US
+                }
+            }
+            break;             
     }
     return true;
 }
